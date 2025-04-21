@@ -65,8 +65,8 @@ Follow these steps to install and run the application locally:
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/aghmnl/compiti-server
-   cd <repository-folder>
+   git clone https://github.com/aghmnl/compiti-client
+   cd compiti-client
    ```
 
 2. **Install dependencies**
@@ -75,22 +75,28 @@ Follow these steps to install and run the application locally:
     npm install
    ```
 
-3. **Set up environment variables**
+3. Link the backend repository as a local dependency:
+
+   ```bash
+   npm install --save ../compiti-server
+   ```
+
+4. **Set up environment variables**
 
 - Create a .env file in the root directory.
 - Add the following variables:
   ```
   NEXT_PUBLIC_CLERK_FRONTEND_API="your-clerk-frontend-api"
-  NEXT_PUBLIC_SERVER_URL="http://localhost:3000"
+  NEXT_PUBLIC_SERVER_URL="http://localhost:4000"
   ```
 
-4. **Run the development server**
+5. **Run the development server**
 
    ```bash
    npm run dev
    ```
 
-5. **Access the application**
+6. **Access the application**
 
 - Open your browser and navigate to http://localhost:3000.
 
