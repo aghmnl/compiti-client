@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+"use client";
 import { Red_Hat_Display } from "next/font/google";
 import "./globals.css";
 import { trpc } from "../utils/trpc";
@@ -14,12 +14,7 @@ const redHatDisplay = Red_Hat_Display({
 const queryClient = new QueryClient();
 const trpcClient = trpc.createClient({ links: [httpBatchLink({ url: "http://localhost:4000/trpc" })] });
 
-export const metadata: Metadata = {
-  title: "Task Management App",
-  description: "Manage your tasks efficiently",
-};
-
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${redHatDisplay.variable}  antialiased`}>
