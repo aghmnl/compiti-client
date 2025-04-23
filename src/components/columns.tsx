@@ -1,16 +1,12 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { z } from "zod";
+import { taskSchema } from "../../../compiti-server/src/trpc/schemas/taskSchemas"; // Adjust the path as needed
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Task = {
-  title: string;
-  description: string | null;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-};
+// Infer Task type from the Zod schema
+export type Task = z.infer<typeof taskSchema>;
+
+import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<Task>[] = [
   {
