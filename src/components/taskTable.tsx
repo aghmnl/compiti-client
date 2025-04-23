@@ -1,19 +1,10 @@
 "use client";
 
 import { DataTable } from "./ui/data-table";
-import { columns } from "./columns";
+import { columns, Task } from "./columns";
 
 interface TaskTableProps {
-  tasks:
-    | {
-        id: number;
-        title: string;
-        description: string | null;
-        status: string;
-        createdAt: string;
-        updatedAt: string;
-      }[]
-    | undefined;
+  tasks: Task[] | undefined;
 }
 
 export function TaskTable({ tasks }: TaskTableProps) {

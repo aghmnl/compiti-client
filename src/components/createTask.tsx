@@ -1,61 +1,79 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { z } from "zod";
-import { createTaskSchema } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+
+// Zod schema for form validation
+const createTaskSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+});
 
 interface CreateTaskFormProps {
   onCreateTask: (title: string, description: string) => Promise<void>;
 }
 
 export function CreateTaskForm({ onCreateTask }: CreateTaskFormProps) {
-  const [newTaskTitle, setNewTaskTitle] = useState("");
-  const [newTaskDescription, setNewTaskDescription] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const form = useForm<z.infer<typeof createTaskSchema>>({
+    resolver: zodResolver(createTaskSchema),
+    defaultValues: {
+      title: "",
+      description: "",
+    },
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validate form data
-    const result = createTaskSchema.safeParse({
-      title: newTaskTitle,
-      description: newTaskDescription,
-    });
-
-    if (!result.success) {
-      setError(result.error.errors[0].message);
-      return;
-    }
-
-    setError(null);
-    await onCreateTask(newTaskTitle, newTaskDescription);
-    setNewTaskTitle("");
-    setNewTaskDescription("");
+  const onSubmit = async (values: z.infer<typeof createTaskSchema>) => {
+    await onCreateTask(values.title, values.description || "");
+    form.reset();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col items-center">
-      {error && <p className="text-red-500">{error}</p>}
-      <input
-        type="text"
-        placeholder="Task Title"
-        value={newTaskTitle}
-        onChange={(e) => setNewTaskTitle(e.target.value)}
-        required
-        className="mb-2 rounded border p-2"
-      />
-      <textarea
-        placeholder="Task Description"
-        value={newTaskDescription}
-        onChange={(e) => setNewTaskDescription(e.target.value)}
-        className="mb-2 rounded border p-2"
-      />
-      <button
-        type="submit"
-        className="rounded bg-blue-500 px-4 py-2 text-white"
-      >
-        Create Task
-      </button>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Title</FormLabel>
+              <FormControl>
+                <Input placeholder="Task Title" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Task Description" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Submit Button */}
+        <Button type="submit">Create Task</Button>
+      </form>
+    </Form>
   );
 }
