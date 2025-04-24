@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 
 interface AlertDialogProps {
   triggerText?: string;
@@ -21,7 +21,7 @@ interface AlertDialogProps {
   description: string;
   cancelText?: string;
   confirmText?: string;
-  onConfirm: () => Promise<void> | void;
+  onConfirm: () => void;
 }
 
 export function CustomAlertDialog({
@@ -33,21 +33,8 @@ export function CustomAlertDialog({
   confirmText = "Confirm",
   onConfirm,
 }: AlertDialogProps) {
-  const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleConfirm = async () => {
-    setIsLoading(true);
-    try {
-      await onConfirm();
-      setOpen(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
+    <AlertDialog>
       <AlertDialogTrigger asChild>
         {triggerIcon ? (
           <Button variant="ghost" size="icon">
@@ -63,17 +50,14 @@ export function CustomAlertDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>
-            {cancelText}
-          </AlertDialogCancel>
+          <AlertDialogCancel>{cancelText}</AlertDialogCancel>
           <AlertDialogAction
-            onClick={handleConfirm}
-            disabled={isLoading}
+            onClick={onConfirm}
             className={
               "text-destructive-foreground hover:bg-destructive/90 bg-red-500"
             }
           >
-            {isLoading ? "Processing..." : confirmText}
+            {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
