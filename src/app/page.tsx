@@ -4,11 +4,15 @@ import { trpc } from "../utils/trpc";
 import React from "react";
 import { TaskTable } from "../components/taskTable";
 import { CreateTaskForm } from "../components/createTask";
-import { Task } from "../components/columns";
+import type { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
 
 export default function HomePage() {
-  const { data: tasks, isLoading } = trpc.getTasks.useQuery<Task[]>();
-  const createTask = trpc.createTask.useMutation();
+  const { data: tasks, isLoading, refetch } = trpc.getTasks.useQuery<Task[]>();
+  const createTask = trpc.createTask.useMutation({
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const handleCreateTask = async (title: string, description: string) => {
     await createTask.mutateAsync({

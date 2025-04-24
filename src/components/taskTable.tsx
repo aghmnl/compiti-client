@@ -1,7 +1,8 @@
 "use client";
 
 import { DataTable } from "./ui/data-table";
-import { columns, Task } from "./columns";
+import { columns } from "./columns";
+import type { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
 
 interface TaskTableProps {
   tasks: Task[] | undefined;
