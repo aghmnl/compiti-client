@@ -5,17 +5,13 @@ import { columns } from "./columns";
 import type { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
 
 interface TaskTableProps {
-  tasks: Task[] | undefined;
+  tasks: Task[];
 }
 
 export function TaskTable({ tasks }: TaskTableProps) {
   return (
     <div className="container mx-auto">
-      {tasks ? (
-        <DataTable columns={columns} data={tasks} />
-      ) : (
-        <p>No tasks available</p>
-      )}
+      <DataTable columns={columns} data={tasks} />
     </div>
   );
 }

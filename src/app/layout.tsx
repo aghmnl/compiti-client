@@ -2,14 +2,26 @@
 import "./globals.css";
 import { trpc } from "../utils/trpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React from "react";
+import React, { useState } from "react"; // Import useState
 import { httpLink } from "@trpc/client";
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import {
+  ClerkProvider,
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/nextjs";
 
-const queryClient = new QueryClient();
-const trpcClient = trpc.createClient({ links: [httpLink({ url: "http://localhost:4000/trpc" })] });
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [queryClient] = useState(() => new QueryClient()); // Create only one QueryClient instance
+  const trpcClient = trpc.createClient({
+    links: [httpLink({ url: "http://localhost:4000/trpc" })],
+  });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
       <html lang="en" className="dark">
@@ -17,13 +29,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <QueryClientProvider client={queryClient}>
             <trpc.Provider client={trpcClient} queryClient={queryClient}>
               <SignedIn>
-              <UserButton />
+                <UserButton />
                 {children}
               </SignedIn>
               <SignedOut>
-                <div className="flex justify-center items-center h-screen">
+                <div className="flex h-screen items-center justify-center">
                   <div>
-                    <h1 className="text-2xl font-bold">Welcome to Compiti! Please sign in to continue.</h1>
+                    <h1 className="text-2xl font-bold">
+                      Welcome to Compiti! Please sign in to continue.
+                    </h1>
                     <SignInButton />
                   </div>
                 </div>
