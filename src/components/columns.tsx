@@ -5,6 +5,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { trpc } from "../utils/trpc";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { CustomAlertDialog } from "./alertDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -30,20 +35,30 @@ export const columns: ColumnDef<Task>[] = [
       const utils = trpc.useUtils();
 
       const deleteTask = trpc.deleteTask.useMutation({
-        onSuccess: () => {
-          utils.getTasks.invalidate();
-        },
+        onSuccess: () => utils.getTasks.invalidate(),
       });
 
+      const handleEdit = () => console.log("Editing:", row.original);
       const handleDelete = async () => {
         await deleteTask.mutateAsync({ id: row.original.id });
       };
 
       return (
         <div className="flex items-center space-x-2">
-          <button className="text-gray-500 hover:text-gray-700">
-            <PencilIcon className="h-5 w-5" />
-          </button>
+          {/* Edit Button with shadcn Tooltip */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleEdit}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <PencilIcon className="h-5 w-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" align="center">
+              <p>Edit task</p>
+            </TooltipContent>
+          </Tooltip>
 
           <CustomAlertDialog
             triggerIcon={<TrashIcon className="h-5 w-5 text-red-500" />}
