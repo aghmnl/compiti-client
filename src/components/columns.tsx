@@ -3,9 +3,8 @@
 import { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
 import { ColumnDef } from "@tanstack/react-table";
 import { trpc } from "../utils/trpc";
-import { Button } from "@/components/ui/button"; // Assuming you have a button component
-import { TrashIcon } from "@heroicons/react/24/solid";
 import { useQueryClient } from "@tanstack/react-query"; // Import react-query's queryClient
+import { DeleteTaskDialog } from "./alertDialog";
 
 export const columns: ColumnDef<Task>[] = [
   {
@@ -28,30 +27,36 @@ export const columns: ColumnDef<Task>[] = [
     id: "actions", // Add a column for actions
     header: "Actions",
     cell: ({ row }) => {
+      const utils = trpc.useUtils(); // Get the tRPC utilities
+
       const queryClient = useQueryClient(); // Access the react-query client
 
       const deleteTask = trpc.deleteTask.useMutation({
         onSuccess: () => {
-          // Invalidate the getTasks query to refresh the table
-          const query = queryClient
-            .getQueryCache()
-            .find({ queryKey: ["getTasks"] });
-          console.log("Found 'getTasks' query in cache:", !!query);
-          queryClient.invalidateQueries({ queryKey: ["getTasks"] });
+          // console.log(
+          //   "All queries in cache:",
+          //   queryClient.getQueryCache().getAll(),
+          // );
+
+          utils.getTasks.invalidate(); // This is the cleanest way
+
+          // Use the exact query key structure from your console
+          // queryClient.invalidateQueries({
+          //   queryKey: [["getTasks"], { type: "query" }],
+          // });
+
+          // OR even better, use this broader invalidation:
+          // queryClient.invalidateQueries({
+          //   queryKey: [["getTasks"]],
+          // });
         },
       });
 
       const handleDelete = async () => {
-        if (confirm("Are you sure you want to delete this task?")) {
-          await deleteTask.mutateAsync({ id: row.original.id });
-        }
+        await deleteTask.mutateAsync({ id: row.original.id });
       };
 
-      return (
-        <Button variant="ghost" className="text-red-500" onClick={handleDelete}>
-          <TrashIcon className="h-5 w-5" />
-        </Button>
-      );
+      return <DeleteTaskDialog onConfirm={handleDelete} />;
     },
   },
 ];

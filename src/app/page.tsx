@@ -7,10 +7,11 @@ import { CreateTaskForm } from "../components/createTask";
 import type { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
 
 export default function HomePage() {
-  const { data: tasks, isLoading, refetch } = trpc.getTasks.useQuery<Task[]>();
+  const utils = trpc.useUtils();
+  const { data: tasks, isLoading } = trpc.getTasks.useQuery();
   const createTask = trpc.createTask.useMutation({
     onSuccess: () => {
-      refetch();
+      utils.getTasks.invalidate();
     },
   });
 
@@ -33,7 +34,7 @@ export default function HomePage() {
         </div>
 
         <div className="md:order-1 md:col-span-2">
-          <TaskTable tasks={tasks} />
+          <TaskTable tasks={tasks || []} />
         </div>
       </div>
     </div>
