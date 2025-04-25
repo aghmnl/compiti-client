@@ -11,20 +11,31 @@ import {
 } from "@/components/ui/tooltip";
 import { useTaskService } from "@/services/taskService";
 
+const wrapCellStyle = "whitespace-normal break-words";
+
 export const columns = (
   onEditClick: (task: Task) => void,
 ): ColumnDef<Task>[] => [
   {
     accessorKey: "id",
-    header: "Id",
+    header: () => <div className="hidden md:table-cell">Id</div>,
+    cell: ({ row }) => (
+      <div className="hidden sm:table-cell">{row.getValue("id")}</div>
+    ),
   },
   {
     accessorKey: "title",
     header: "Task",
+    cell: ({ row }) => (
+      <div className={wrapCellStyle}>{row.getValue("title")}</div>
+    ),
   },
   {
     accessorKey: "description",
     header: "Description",
+    cell: ({ row }) => (
+      <div className={wrapCellStyle}>{row.getValue("description")}</div>
+    ),
   },
   {
     accessorKey: "status",
