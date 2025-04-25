@@ -125,15 +125,15 @@ export function CreateTaskForm({
                       {/* Change the displayed value */}
                       <SelectValue placeholder="Select status">
                         {field.value === "in_progress"
-                          ? "In progress"
+                          ? "in progress"
                           : field.value}
                       </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="done">Done</SelectItem>
+                    <SelectItem value="pending">pending</SelectItem>
+                    <SelectItem value="in_progress">in progress</SelectItem>
+                    <SelectItem value="done">done</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
