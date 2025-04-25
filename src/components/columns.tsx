@@ -29,6 +29,12 @@ export const columns = (
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as Task["status"];
+      // Change the status display to `in progress`
+      const displayStatus = status === "in_progress" ? "in progress" : status;
+      return <div>{displayStatus}</div>;
+    },
   },
   {
     id: "actions",

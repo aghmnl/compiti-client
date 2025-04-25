@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -41,11 +41,13 @@ export function CreateTaskForm({
 }: CreateTaskFormProps) {
   const form = useForm<CreateTaskInput | UpdateTaskInput>({
     defaultValues: {
-      title: taskToEdit?.title || "",
-      description: taskToEdit?.description || "",
-      status: taskToEdit?.status || "pending",
+      title: "",
+      description: "",
+      status: "pending",
     },
   });
+
+  const formRef = useRef(form);
 
   useEffect(() => {
     if (taskToEdit) {
@@ -70,6 +72,7 @@ export function CreateTaskForm({
     } else {
       await onCreateTask(values as CreateTaskInput);
     }
+    // Resetting the form
     form.reset();
   };
 
@@ -94,7 +97,6 @@ export function CreateTaskForm({
           control={form.control}
           name="description"
           render={({ field }) => {
-            // This is a workaround to handle null values for the Textarea
             const textareaProps = {
               ...field,
               value: field.value || "",
@@ -121,7 +123,10 @@ export function CreateTaskForm({
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={
-                    field.value as "pending" | "in_progress" | "done"
+                    // Change the default value to "in progress" if is `in_progress`
+                    field.value === "in_progress"
+                      ? "in progress"
+                      : (field.value as "pending" | "in_progress" | "done")
                   }
                 >
                   <FormControl>

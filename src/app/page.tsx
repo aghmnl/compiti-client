@@ -18,6 +18,9 @@ export default function HomePage() {
 
   const handleUpdateTask = async (task: UpdateTaskInput) => {
     await updateTask.mutateAsync(task);
+    // Resetting state after successful update
+    setEditingMode(false);
+    setTaskToEdit(undefined);
   };
 
   const handleToggleChange = () => {
@@ -50,8 +53,11 @@ export default function HomePage() {
             onCreateTask={handleCreateTask}
             onUpdateTask={handleUpdateTask}
             showEditButton={editingMode}
-            taskToEdit={editingMode ? taskToEdit : undefined}
-            onCancelEdit={() => setEditingMode(false)}
+            taskToEdit={taskToEdit}
+            onCancelEdit={() => {
+              setEditingMode(false);
+              setTaskToEdit(undefined);
+            }}
           />
         </div>
 
