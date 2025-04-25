@@ -2,7 +2,7 @@
 
 import { DataTable } from "./ui/data-table";
 import { columns } from "./columns";
-import type { Task } from "@/shared/task-types";
+import type { Task } from "@/shared/taskDefinitions";
 
 interface TaskTableProps {
   tasks: Task[];

@@ -1,5 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   Form,
   FormField,
@@ -22,12 +24,19 @@ import type {
   Task,
   CreateTaskInput,
   UpdateTaskInput,
-} from "@/shared/task-types";
+} from "@/shared/taskDefinitions";
+
+import { createTaskSchema } from "@/shared/taskDefinitions";
+
+const taskFormValidationSchema = createTaskSchema.extend({
+  id: z.number().optional(),
+});
+
+type TaskFormData = z.infer<typeof taskFormValidationSchema>;
 
 interface CreateTaskFormProps {
   onCreateTask: (task: CreateTaskInput) => Promise<void>;
   onUpdateTask: (task: UpdateTaskInput) => Promise<void>;
-  showEditButton: boolean;
   taskToEdit?: Task;
   onCancelEdit: () => void;
 }
@@ -35,45 +44,54 @@ interface CreateTaskFormProps {
 export function CreateTaskForm({
   onCreateTask,
   onUpdateTask,
-  showEditButton = false,
   taskToEdit,
   onCancelEdit,
 }: CreateTaskFormProps) {
-  const form = useForm<CreateTaskInput | UpdateTaskInput>({
+  const form = useForm<TaskFormData>({
+    resolver: zodResolver(taskFormValidationSchema),
     defaultValues: {
       title: "",
       description: "",
       status: "pending",
+      id: undefined,
     },
   });
-
-  const formRef = useRef(form);
 
   useEffect(() => {
     if (taskToEdit) {
       form.reset({
+        id: taskToEdit.id,
         title: taskToEdit.title,
         description: taskToEdit.description || "",
         status: taskToEdit.status,
-        id: taskToEdit.id,
       });
     } else {
       form.reset({
         title: "",
         description: "",
         status: "pending",
+        id: undefined,
       });
     }
+    form.clearErrors();
   }, [taskToEdit, form]);
 
-  const onSubmit = async (values: CreateTaskInput | UpdateTaskInput) => {
+  const onSubmit = async (validatedData: TaskFormData) => {
     if (taskToEdit) {
-      await onUpdateTask({ ...values, id: taskToEdit.id });
+      await onUpdateTask({ ...validatedData, id: taskToEdit.id });
     } else {
-      await onCreateTask(values as CreateTaskInput);
+      const { id, ...createData } = validatedData;
+      await onCreateTask(createData);
     }
-    form.reset();
+    form.reset({
+      title: "",
+      description: "",
+      status: "pending",
+      id: undefined,
+    });
   };
+
+  const isEditing = !!taskToEdit;
 
   return (
     <Form {...form}>
@@ -98,7 +116,7 @@ export function CreateTaskForm({
           render={({ field }) => {
             const textareaProps = {
               ...field,
-              value: field.value || "",
+              value: field.value ?? "",
             };
             return (
               <FormItem>
@@ -112,7 +130,7 @@ export function CreateTaskForm({
           }}
         />
 
-        {showEditButton && (
+        {isEditing && (
           <FormField
             control={form.control}
             name="status"
@@ -122,7 +140,6 @@ export function CreateTaskForm({
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      {/* Change the displayed value */}
                       <SelectValue placeholder="Select status">
                         {field.value === "in_progress"
                           ? "in progress"
@@ -143,14 +160,14 @@ export function CreateTaskForm({
         )}
 
         <div className="flex gap-2">
-          {!showEditButton && <Button type="submit">Create Task</Button>}
-          {showEditButton && (
-            <div className="flex gap-2">
-              <Button type="reset" onClick={onCancelEdit} variant="secondary">
+          {!isEditing && <Button type="submit">Create Task</Button>}
+          {isEditing && (
+            <>
+              <Button type="button" onClick={onCancelEdit} variant="secondary">
                 Cancel
               </Button>
               <Button type="submit">Save Task</Button>
-            </div>
+            </>
           )}
         </div>
       </form>

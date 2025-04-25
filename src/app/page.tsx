@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { TaskTable } from "../components/taskTable";
 import { CreateTaskForm } from "../components/createTask";
-import { Task, CreateTaskInput, UpdateTaskInput } from "@/shared/task-types";
+import {
+  Task,
+  CreateTaskInput,
+  UpdateTaskInput,
+} from "@/shared/taskDefinitions";
 import { useTaskService } from "@/services/taskService";
 
 export default function HomePage() {
-  const [editingMode, setEditingMode] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
   const { createTask, fetchTasks, updateTask } = useTaskService();
 
@@ -17,16 +20,20 @@ export default function HomePage() {
 
   const handleUpdateTask = async (task: UpdateTaskInput) => {
     await updateTask.mutateAsync(task);
-    setEditingMode(false);
     setTaskToEdit(undefined);
   };
 
   const handleEditClick = (task: Task) => {
-    setEditingMode(true);
     setTaskToEdit(task);
   };
 
+  const handleCancelEdit = () => {
+    setTaskToEdit(undefined);
+  };
+
   if (fetchTasks.isLoading) return <p>Loading tasks...</p>;
+  if (fetchTasks.error)
+    return <p>Error loading tasks: {fetchTasks.error.message}</p>;
 
   return (
     <div className="h-screen p-8">
@@ -37,12 +44,8 @@ export default function HomePage() {
           <CreateTaskForm
             onCreateTask={handleCreateTask}
             onUpdateTask={handleUpdateTask}
-            showEditButton={editingMode}
             taskToEdit={taskToEdit}
-            onCancelEdit={() => {
-              setEditingMode(false);
-              setTaskToEdit(undefined);
-            }}
+            onCancelEdit={handleCancelEdit}
           />
         </div>
 
