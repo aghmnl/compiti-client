@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormField,
@@ -22,13 +20,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import type { Task } from "@/shared/task-types";
-
-const createTaskSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
-  status: z.enum(["pending", "in_progress", "done"]).optional(),
-});
+import type { Task, CreateTaskInput } from "@/shared/task-types";
 
 interface CreateTaskFormProps {
   onCreateTask: (title: string, description: string) => Promise<void>;
@@ -43,8 +35,7 @@ export function CreateTaskForm({
   taskToEdit,
   onCancelEdit,
 }: CreateTaskFormProps) {
-  const form = useForm<z.infer<typeof createTaskSchema>>({
-    resolver: zodResolver(createTaskSchema),
+  const form = useForm<CreateTaskInput>({
     defaultValues: {
       title: taskToEdit?.title || "",
       description: taskToEdit?.description || "",
@@ -60,7 +51,7 @@ export function CreateTaskForm({
     });
   }, [taskToEdit, form]);
 
-  const onSubmit = async (values: z.infer<typeof createTaskSchema>) => {
+  const onSubmit = async (values: CreateTaskInput) => {
     await onCreateTask(values.title, values.description || "");
     form.reset();
   };
@@ -85,15 +76,22 @@ export function CreateTaskForm({
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Task Description" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={({ field }) => {
+            // This is a workaround to handle null values for the Textarea
+            const textareaProps = {
+              ...field,
+              value: field.value || "",
+            };
+            return (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Task Description" {...textareaProps} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
 
         {showEditButton && (
