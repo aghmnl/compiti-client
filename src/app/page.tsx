@@ -4,7 +4,7 @@ import { useState } from "react";
 import { TaskTable } from "../components/taskTable";
 import { CreateTaskForm } from "../components/createTask";
 import { Toggle } from "@/components/ui/toggle";
-import { Task } from "@/shared/task-types";
+import { Task, CreateTaskInput } from "@/shared/task-types";
 import { useTaskService } from "@/services/taskService";
 
 export default function HomePage() {
@@ -12,12 +12,9 @@ export default function HomePage() {
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
   const { createTask, fetchTasks } = useTaskService();
 
-  const handleCreateTask = async (title: string, description: string) => {
-    await createTask.mutateAsync({
-      title,
-      description,
-      status: "pending",
-    });
+  // Corrected handleCreateTask function
+  const handleCreateTask = async (task: CreateTaskInput) => {
+    await createTask.mutateAsync(task);
   };
 
   const handleToggleChange = () => {

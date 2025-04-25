@@ -1,6 +1,4 @@
-// src/services/taskService.ts
 import { trpc } from "@/utils/trpc";
-import { Task } from "@/shared/task-types";
 
 export function useTaskService() {
   const utils = trpc.useUtils();
