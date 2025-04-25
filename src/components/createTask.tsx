@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import type { Task, CreateTaskInput } from "@/shared/task-types";
 
 interface CreateTaskFormProps {
-  onCreateTask: (title: string, description: string) => Promise<void>;
+  onCreateTask: (task: CreateTaskInput) => Promise<void>;
   showEditButton: boolean;
   taskToEdit?: Task;
   onCancelEdit: () => void;
@@ -52,7 +52,7 @@ export function CreateTaskForm({
   }, [taskToEdit, form]);
 
   const onSubmit = async (values: CreateTaskInput) => {
-    await onCreateTask(values.title, values.description || "");
+    await onCreateTask(values);
     form.reset();
   };
 

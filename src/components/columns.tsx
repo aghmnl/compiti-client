@@ -2,7 +2,6 @@
 
 import { Task } from "@/shared/task-types";
 import { ColumnDef } from "@tanstack/react-table";
-import { trpc } from "../utils/trpc";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { CustomAlertDialog } from "./alertDialog";
 import {
@@ -10,6 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTaskService } from "@/services/taskService";
 
 export const columns = (
   onEditClick: (task: Task) => void,
@@ -34,15 +34,10 @@ export const columns = (
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const utils = trpc.useUtils();
-
-      const deleteTask = trpc.deleteTask.useMutation({
-        onSuccess: () => utils.getTasks.invalidate(),
-      });
+      const { deleteTask } = useTaskService();
 
       const handleEdit = () => {
-        onEditClick(row.original); // Pass the entire task object
-        // Removed the console.log from here
+        onEditClick(row.original);
       };
       const handleDelete = async () => {
         await deleteTask.mutateAsync({ id: row.original.id });

@@ -1,23 +1,16 @@
 "use client";
 
-import { trpc } from "../utils/trpc";
 import { useState } from "react";
 import { TaskTable } from "../components/taskTable";
 import { CreateTaskForm } from "../components/createTask";
 import { Toggle } from "@/components/ui/toggle";
 import { Task } from "@/shared/task-types";
+import { useTaskService } from "@/services/taskService";
 
 export default function HomePage() {
   const [editingMode, setEditingMode] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
-
-  const utils = trpc.useUtils();
-  const { data: tasks, isLoading } = trpc.getTasks.useQuery();
-  const createTask = trpc.createTask.useMutation({
-    onSuccess: () => {
-      utils.getTasks.invalidate();
-    },
-  });
+  const { createTask, fetchTasks } = useTaskService();
 
   const handleCreateTask = async (title: string, description: string) => {
     await createTask.mutateAsync({
@@ -36,7 +29,7 @@ export default function HomePage() {
     setTaskToEdit(task);
   };
 
-  if (isLoading) return <p>Loading tasks...</p>;
+  if (fetchTasks.isLoading) return <p>Loading tasks...</p>;
 
   return (
     <div className="h-screen p-8">
@@ -62,7 +55,10 @@ export default function HomePage() {
         </div>
 
         <div className="md:order-1 md:col-span-2">
-          <TaskTable tasks={tasks || []} onEditClick={handleEditClick} />
+          <TaskTable
+            tasks={fetchTasks.data || []}
+            onEditClick={handleEditClick}
+          />
         </div>
       </div>
     </div>
