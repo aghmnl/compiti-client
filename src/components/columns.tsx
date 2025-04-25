@@ -45,23 +45,25 @@ export const columns = (
   },
   {
     accessorKey: "description",
-    header: "Description",
+    header: () => <div className="hidden sm:table-cell">Description</div>,
     cell: ({ row }) => (
-      <div className={wrapCellStyle}>{row.getValue("description")}</div>
+      <div className={`${wrapCellStyle} hidden sm:table-cell`}>
+        {row.getValue("description")}
+      </div>
     ),
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: () => <div className="xs:table-cell hidden">Status</div>,
     cell: ({ row }) => {
       const status = row.getValue("status") as Task["status"];
       const displayStatus = status === "in_progress" ? "in progress" : status;
-      return <div>{displayStatus}</div>;
+      return <div className="xs:table-cell hidden">{displayStatus}</div>;
     },
   },
   {
     id: "actions",
-    header: () => <div className="hidden sm:table-cell">Actions</div>,
+    header: () => <div className="hidden md:table-cell">Actions</div>,
     cell: ({ row }) => {
       const { deleteTask } = useTaskService();
       const task = row.original;
@@ -76,7 +78,7 @@ export const columns = (
 
       return (
         <div>
-          <div className="sm:hidden">
+          <div className="md:hidden">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-8 w-8 p-0">
@@ -91,7 +93,6 @@ export const columns = (
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-
                 <CustomAlertDialog
                   title="Delete Task"
                   description="Are you sure you want to delete this task? This action cannot be undone."
@@ -110,7 +111,7 @@ export const columns = (
             </DropdownMenu>
           </div>
 
-          <div className="hidden items-center space-x-2 sm:flex">
+          <div className="hidden items-center space-x-2 md:flex">
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
