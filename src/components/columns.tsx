@@ -1,13 +1,19 @@
 "use client";
 
-import { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
+import { Task } from "@/shared/task-types";
 import { ColumnDef } from "@tanstack/react-table";
-import { trpc } from "../utils/trpc";
-// import { useQueryClient } from "@tanstack/react-query"; // Import react-query's queryClient
-import { TrashIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { CustomAlertDialog } from "./alertDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useTaskService } from "@/services/taskService";
 
-export const columns: ColumnDef<Task>[] = [
+export const columns = (
+  onEditClick: (task: Task) => void,
+): ColumnDef<Task>[] => [
   {
     accessorKey: "id",
     header: "Id",
@@ -23,48 +29,49 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as Task["status"];
+      const displayStatus = status === "in_progress" ? "in progress" : status;
+      return <div>{displayStatus}</div>;
+    },
   },
   {
-    id: "actions", // Add a column for actions
+    id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const utils = trpc.useUtils(); // Get the tRPC utilities
+      const { deleteTask } = useTaskService();
 
-      // const queryClient = useQueryClient(); // Access the react-query client
-
-      const deleteTask = trpc.deleteTask.useMutation({
-        onSuccess: () => {
-          // console.log(
-          //   "All queries in cache:",
-          //   queryClient.getQueryCache().getAll(),
-          // );
-
-          utils.getTasks.invalidate(); // This is the cleanest way
-
-          // Use the exact query key structure from your console
-          // queryClient.invalidateQueries({
-          //   queryKey: [["getTasks"], { type: "query" }],
-          // });
-
-          // OR even better, use this broader invalidation:
-          // queryClient.invalidateQueries({
-          //   queryKey: [["getTasks"]],
-          // });
-        },
-      });
-
+      const handleEdit = () => {
+        onEditClick(row.original);
+      };
       const handleDelete = async () => {
         await deleteTask.mutateAsync({ id: row.original.id });
       };
 
       return (
-        <CustomAlertDialog
-          triggerIcon={<TrashIcon className="text-red-500" />}
-          title="Delete Task"
-          description="Are you sure you want to delete this task? This action cannot be undone."
-          confirmText="Delete"
-          onConfirm={handleDelete}
-        />
+        <div className="flex items-center space-x-2">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={handleEdit}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <PencilIcon className="h-5 w-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" align="center">
+              <p>Edit task</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <CustomAlertDialog
+            triggerIcon={<TrashIcon className="h-5 w-5 text-red-500" />}
+            title="Delete Task"
+            description="Are you sure you want to delete this task? This action cannot be undone."
+            confirmText="Delete"
+            onConfirm={handleDelete}
+          />
+        </div>
       );
     },
   },
