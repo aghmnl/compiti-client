@@ -9,6 +9,8 @@ import {
   UpdateTaskInput,
 } from "@/shared/taskDefinitions";
 import { useTaskService } from "@/services/taskService";
+import { Button } from "@/components/ui/button"; // Import Button
+import { PlusIcon } from "@heroicons/react/24/solid"; // Import an icon
 
 export default function HomePage() {
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
@@ -36,9 +38,11 @@ export default function HomePage() {
     return <p>Error loading tasks: {fetchTasks.error.message}</p>;
 
   return (
-    <div className="h-screen p-8">
+    // Use relative positioning on the main container if needed for fixed positioning
+    <div className="relative min-h-screen p-4 sm:p-8">
+      {" "}
+      {/* Adjusted padding */}
       <h1 className="mb-8 text-center text-3xl font-bold">Compiti</h1>
-
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         <div className="lg:order-2 lg:col-span-1">
           <TaskForm
@@ -56,6 +60,12 @@ export default function HomePage() {
           />
         </div>
       </div>
+      <Button
+        className="xs:hidden fixed right-6 bottom-6 h-14 w-14 rounded-full p-4 shadow-lg"
+        aria-label="Create new task"
+      >
+        <PlusIcon className="h-6 w-6" />
+      </Button>
     </div>
   );
 }
