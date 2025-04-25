@@ -103,7 +103,7 @@ export function TaskForm({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Task Title" {...field} />
+                <Input placeholder="Task Title" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>
