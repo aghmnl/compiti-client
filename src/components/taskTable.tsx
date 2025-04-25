@@ -11,7 +11,7 @@ interface TaskTableProps {
 
 export function TaskTable({ tasks, onEditClick }: TaskTableProps) {
   return (
-    <div className="container mx-auto">
+    <div>
       <DataTable columns={columns(onEditClick)} data={tasks} />
     </div>
   );

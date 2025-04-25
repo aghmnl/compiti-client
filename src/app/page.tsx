@@ -39,8 +39,8 @@ export default function HomePage() {
     <div className="h-screen p-8">
       <h1 className="mb-8 text-center text-3xl font-bold">Compiti</h1>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div className="md:order-2 md:col-span-1">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="lg:order-2 lg:col-span-1">
           <TaskForm
             onCreateTask={handleCreateTask}
             onUpdateTask={handleUpdateTask}
@@ -49,7 +49,7 @@ export default function HomePage() {
           />
         </div>
 
-        <div className="md:order-1 md:col-span-2">
+        <div className="lg:order-1 lg:col-span-2">
           <TaskTable
             tasks={fetchTasks.data || []}
             onEditClick={handleEditClick}
