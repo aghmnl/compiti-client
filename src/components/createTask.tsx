@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -20,10 +18,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import type { Task, CreateTaskInput } from "@/shared/task-types";
+import type {
+  Task,
+  CreateTaskInput,
+  UpdateTaskInput,
+} from "@/shared/task-types";
 
 interface CreateTaskFormProps {
   onCreateTask: (task: CreateTaskInput) => Promise<void>;
+  onUpdateTask: (task: UpdateTaskInput) => Promise<void>;
   showEditButton: boolean;
   taskToEdit?: Task;
   onCancelEdit: () => void;
@@ -31,11 +34,12 @@ interface CreateTaskFormProps {
 
 export function CreateTaskForm({
   onCreateTask,
+  onUpdateTask,
   showEditButton = false,
   taskToEdit,
   onCancelEdit,
 }: CreateTaskFormProps) {
-  const form = useForm<CreateTaskInput>({
+  const form = useForm<CreateTaskInput | UpdateTaskInput>({
     defaultValues: {
       title: taskToEdit?.title || "",
       description: taskToEdit?.description || "",
@@ -44,15 +48,28 @@ export function CreateTaskForm({
   });
 
   useEffect(() => {
-    form.reset({
-      title: taskToEdit?.title || "",
-      description: taskToEdit?.description || "",
-      status: taskToEdit?.status || "pending",
-    });
+    if (taskToEdit) {
+      form.reset({
+        title: taskToEdit.title,
+        description: taskToEdit.description || "",
+        status: taskToEdit.status,
+        id: taskToEdit.id,
+      });
+    } else {
+      form.reset({
+        title: "",
+        description: "",
+        status: "pending",
+      });
+    }
   }, [taskToEdit, form]);
 
-  const onSubmit = async (values: CreateTaskInput) => {
-    await onCreateTask(values);
+  const onSubmit = async (values: CreateTaskInput | UpdateTaskInput) => {
+    if (taskToEdit) {
+      await onUpdateTask({ ...values, id: taskToEdit.id });
+    } else {
+      await onCreateTask(values as CreateTaskInput);
+    }
     form.reset();
   };
 
@@ -103,7 +120,9 @@ export function CreateTaskForm({
                 <FormLabel>Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={
+                    field.value as "pending" | "in_progress" | "done"
+                  }
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -129,7 +148,7 @@ export function CreateTaskForm({
               <Button type="reset" onClick={onCancelEdit} variant="secondary">
                 Cancel
               </Button>
-              <Button type="submit"> Save Task </Button>
+              <Button type="submit">Save Task</Button>
             </div>
           )}
         </div>

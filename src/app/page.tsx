@@ -4,17 +4,20 @@ import { useState } from "react";
 import { TaskTable } from "../components/taskTable";
 import { CreateTaskForm } from "../components/createTask";
 import { Toggle } from "@/components/ui/toggle";
-import { Task, CreateTaskInput } from "@/shared/task-types";
+import { Task, CreateTaskInput, UpdateTaskInput } from "@/shared/task-types";
 import { useTaskService } from "@/services/taskService";
 
 export default function HomePage() {
   const [editingMode, setEditingMode] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | undefined>(undefined);
-  const { createTask, fetchTasks } = useTaskService();
+  const { createTask, fetchTasks, updateTask } = useTaskService();
 
-  // Corrected handleCreateTask function
   const handleCreateTask = async (task: CreateTaskInput) => {
     await createTask.mutateAsync(task);
+  };
+
+  const handleUpdateTask = async (task: UpdateTaskInput) => {
+    await updateTask.mutateAsync(task);
   };
 
   const handleToggleChange = () => {
@@ -45,6 +48,7 @@ export default function HomePage() {
         <div className="md:order-2 md:col-span-1">
           <CreateTaskForm
             onCreateTask={handleCreateTask}
+            onUpdateTask={handleUpdateTask}
             showEditButton={editingMode}
             taskToEdit={editingMode ? taskToEdit : undefined}
             onCancelEdit={() => setEditingMode(false)}
