@@ -72,7 +72,6 @@ export function CreateTaskForm({
     } else {
       await onCreateTask(values as CreateTaskInput);
     }
-    // Resetting the form
     form.reset();
   };
 
@@ -122,16 +121,16 @@ export function CreateTaskForm({
                 <FormLabel>Status</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={
-                    // Change the default value to "in progress" if is `in_progress`
-                    field.value === "in_progress"
-                      ? "in progress"
-                      : (field.value as "pending" | "in_progress" | "done")
-                  }
+                  defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
+                      {/* Change the displayed value */}
+                      <SelectValue placeholder="Select status">
+                        {field.value === "in_progress"
+                          ? "In progress"
+                          : field.value}
+                      </SelectValue>
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
