@@ -24,13 +24,12 @@ import type {
   Task,
   CreateTaskInput,
   UpdateTaskInput,
-} from "@/shared/task-types";
+} from "@/shared/taskDefinitions";
 
-const taskFormValidationSchema = z.object({
+import { createTaskSchema } from "@/shared/taskDefinitions";
+
+const taskFormValidationSchema = createTaskSchema.extend({
   id: z.number().optional(),
-  title: z.string().min(1, "Title is required"),
-  description: z.string().nullable().optional(),
-  status: z.enum(["pending", "in_progress", "done"]),
 });
 
 type TaskFormData = z.infer<typeof taskFormValidationSchema>;
@@ -82,7 +81,7 @@ export function CreateTaskForm({
       await onUpdateTask({ ...validatedData, id: taskToEdit.id });
     } else {
       const { id, ...createData } = validatedData;
-      await onCreateTask(createData as CreateTaskInput);
+      await onCreateTask(createData);
     }
     form.reset({
       title: "",
@@ -164,7 +163,7 @@ export function CreateTaskForm({
           {!isEditing && <Button type="submit">Create Task</Button>}
           {isEditing && (
             <>
-              <Button onClick={onCancelEdit} variant="secondary">
+              <Button type="button" onClick={onCancelEdit} variant="secondary">
                 Cancel
               </Button>
               <Button type="submit">Save Task</Button>

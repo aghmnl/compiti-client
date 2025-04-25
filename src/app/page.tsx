@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { TaskTable } from "../components/taskTable";
 import { CreateTaskForm } from "../components/createTask";
-import { Task, CreateTaskInput, UpdateTaskInput } from "@/shared/task-types";
+import {
+  Task,
+  CreateTaskInput,
+  UpdateTaskInput,
+} from "@/shared/taskDefinitions";
 import { useTaskService } from "@/services/taskService";
 
 export default function HomePage() {

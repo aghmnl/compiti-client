@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "@/shared/task-types";
+import { Task } from "@/shared/taskDefinitions";
 import { ColumnDef } from "@tanstack/react-table";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
 import { CustomAlertDialog } from "./alertDialog";
