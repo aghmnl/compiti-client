@@ -41,7 +41,7 @@ interface CreateTaskFormProps {
   onCancelEdit: () => void;
 }
 
-export function CreateTaskForm({
+export function TaskForm({
   onCreateTask,
   onUpdateTask,
   taskToEdit,
@@ -103,7 +103,7 @@ export function CreateTaskForm({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Task Title" {...field} />
+                <Input placeholder="Task Title" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>

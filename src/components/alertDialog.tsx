@@ -14,9 +14,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ReactNode } from "react";
 
-interface AlertDialogProps {
-  triggerText?: string;
-  triggerIcon?: ReactNode;
+interface CustomAlertDialogProps {
+  children: ReactNode;
   title: string;
   description: string;
   cancelText?: string;
@@ -25,25 +24,16 @@ interface AlertDialogProps {
 }
 
 export function CustomAlertDialog({
-  triggerText,
-  triggerIcon,
+  children,
   title,
   description,
   cancelText = "Cancel",
   confirmText = "Confirm",
   onConfirm,
-}: AlertDialogProps) {
+}: CustomAlertDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>
-        {triggerIcon ? (
-          <Button variant="ghost" size="icon">
-            {triggerIcon}
-          </Button>
-        ) : (
-          <Button variant="outline">{triggerText}</Button>
-        )}
-      </AlertDialogTrigger>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -54,7 +44,7 @@ export function CustomAlertDialog({
           <AlertDialogAction
             onClick={onConfirm}
             className={
-              "text-destructive-foreground hover:bg-destructive/90 bg-red-500"
+              "text-destructive-foreground hover:bg-destructive/90 bg-red-500" // Simplified classes
             }
           >
             {confirmText}
