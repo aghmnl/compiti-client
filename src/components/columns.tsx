@@ -1,6 +1,6 @@
 "use client";
 
-import { Task } from "../../../compiti-server/src/trpc/schemas/taskSchemas";
+import { Task } from "@/shared/task-types";
 import { ColumnDef } from "@tanstack/react-table";
 import { trpc } from "../utils/trpc";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/solid";
@@ -11,7 +11,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export const columns = (onEditClick: () => void): ColumnDef<Task>[] => [
+export const columns = (
+  onEditClick: (task: Task) => void,
+): ColumnDef<Task>[] => [
   {
     accessorKey: "id",
     header: "Id",
@@ -39,8 +41,8 @@ export const columns = (onEditClick: () => void): ColumnDef<Task>[] => [
       });
 
       const handleEdit = () => {
-        onEditClick();
-        console.log("Editing:", row.original);
+        onEditClick(row.original); // Pass the entire task object
+        // Removed the console.log from here
       };
       const handleDelete = async () => {
         await deleteTask.mutateAsync({ id: row.original.id });
