@@ -41,7 +41,7 @@ interface CreateTaskFormProps {
   onCancelEdit: () => void;
 }
 
-export function CreateTaskForm({
+export function TaskForm({
   onCreateTask,
   onUpdateTask,
   taskToEdit,

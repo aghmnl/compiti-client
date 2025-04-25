@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { TaskTable } from "../components/taskTable";
-import { CreateTaskForm } from "../components/createTask";
+import { TaskForm } from "../components/taskForm";
 import {
   Task,
   CreateTaskInput,
@@ -41,7 +41,7 @@ export default function HomePage() {
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
         <div className="md:order-2 md:col-span-1">
-          <CreateTaskForm
+          <TaskForm
             onCreateTask={handleCreateTask}
             onUpdateTask={handleUpdateTask}
             taskToEdit={taskToEdit}
