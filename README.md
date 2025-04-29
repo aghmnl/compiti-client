@@ -9,30 +9,46 @@ This repository contains the **Client Side** of a simple **Task Management Appli
 - **description**: Optional string field.
 - **status**: Enum with values: `pending`, `in progress`, `done`.
 
+### Demo Video
+
+Watch a demo of the application here:
+
+[![Application Demo Thumbnail](https://img.youtube.com/vi/T5U76kEB1eU/hqdefault.jpg)](https://youtu.be/T5U76kEB1eU)
+
+Or directly: [Watch Demo Video](https://youtu.be/T5U76kEB1eU)
+
+## Server side
+
 The **Server Side** of this application is available in the following repository:  
 [https://github.com/aghmnl/compiti-server](https://github.com/aghmnl/compiti-server)
 
-The server is implemented using the following technologies:
+**Important:** This client is designed to work closely with the server repository. Both repositories **must** be cloned into the same parent directory, like this:
 
-- **Next.js** (App Router, TypeScript) for the frontend.
-- **tRPC** for communication with the backend.
-- **Zod** for client-side schema validation.
-- **shadcn/ui** for a clean and responsive UI.
-- **Clerk** for user authentication.
+ParentFolder/  
+├── compiti-client/ (This repository)  
+└── compiti-server/ (The server repository)
 
-## Features
+This structure is necessary because the client installs the server as a local file dependency to share common code, such as type definitions (`taskDefinitions`).
 
-The client includes the following functionalities:
+## Features & Objectives Achieved
 
-1. Create a new task.
-2. View the list of tasks.
-3. Edit an existing task.
-4. Delete a task.
-5. Client-side validation using Zod.
-6. A clean and responsive UI built with shadcn/ui.
-7. Authentication using Clerk.
+This repository successfully implements a full CRUD (Create, Read, Update, Delete) Task Management application client, demonstrating proficiency in:
 
-## Documentation Used
+- **Modern Frontend Stack:** Built with **Next.js 15 (App Router)** and **React 19**.
+- **Type-Safe API Communication:** Integrated **tRPC** for end-to-end type safety between client and server.
+- **Robust Data Fetching & State Management:** Leveraged **TanStack Query (React Query)** for efficient data fetching, caching, and synchronization, including automatic UI updates after mutations.
+- **Advanced Data Grid:** Implemented a feature-rich task table using **TanStack Table (React Table)**, featuring:
+  - Sorting (Implicit via TanStack Table capabilities, if enabled).
+  - Responsive column visibility.
+  - Action menus (Edit, Delete) accessible via buttons and dropdowns for different screen sizes.
+- **Component-Based UI:** Developed using **shadcn/ui** for a clean, accessible, and composable component library (including `DataTable`, `Dialog`, `Form`, `Input`, `Button`, `DropdownMenu`, `Tooltip`, `Select`).
+- **Form Handling & Validation:** Utilized **React Hook Form** for efficient form state management and **Zod** for schema definition and validation, ensuring data integrity before API calls.
+- **Authentication:** Integrated **Clerk** for secure user authentication and management, protecting application routes.
+- **Responsive Design:** Ensured the UI adapts gracefully to different screen sizes, including a Floating Action Button (FAB) on mobile for creating tasks.
+- **Code Quality & Organization:** Followed best practices for code structure, separating concerns into components, services (`useTaskService`), shared types (`taskDefinitions`), and utility functions.
+- **Developer Experience:** Configured with **TypeScript**, **ESLint**, and **Prettier** (with Tailwind CSS plugin) for improved code consistency and maintainability.
+
+### Documentation Used
 
 The following official documentation was used during the development process:
 
@@ -42,15 +58,6 @@ The following official documentation was used during the development process:
 - [shadcn/ui Documentation](https://ui.shadcn.com/docs)
 - [Clerk Documentation](https://clerk.dev/docs)
 
-## Objectives Achieved
-
-This repository fulfills the following objectives:
-
-- Implements a modular component structure.
-- Follows best practices for code organization (e.g., separation of components, API calls, validations).
-- Provides a fully functional CRUD application with a clean and responsive UI.
-- Ensures secure access to the application using Clerk authentication.
-
 ## Installation and Local Setup
 
 Follow these steps to install and run the application locally:
@@ -58,51 +65,75 @@ Follow these steps to install and run the application locally:
 ### Prerequisites
 
 - Node.js (v16 or higher)
-- npm or yarn
+- npm
+- A running instance of the [Compiti Server](https://github.com/aghmnl/compiti-server)
 
 ### Steps
 
 1. **Clone the repository**
 
    ```bash
+   # Navigate to your desired parent directory
+   cd path/to/your/ParentFolder
+
+   # Clone the server
+   git clone https://github.com/aghmnl/compiti-server
+
+   # Clone the client
    git clone https://github.com/aghmnl/compiti-client
+
+   # Navigate into the client directory
    cd compiti-client
    ```
 
-2. **Install dependencies**
-
-   ```bash
-    npm install
-   ```
-
-3. Link the backend repository as a local dependency:
+2. **Install client dependencies AND link the server repository:**
 
    ```bash
    npm install --save ../compiti-server
    ```
 
-4. **Set up environment variables**
+3. **Set up environment variables**
 
-- Create a .env file in the root directory.
-- Add the following variables:
+- Create a .env.local file in the root of the compiti-client directory.
+- Add the following variables, replacing placeholder values:
+
+  ```bash
+  # The base URL of your Compiti Server (running locally)
+  # Note: Do NOT include /trpc here; the client adds it.
+  NEXT_PUBLIC_SERVER_URL=http://localhost:4000
+
+  # Your Clerk Publishable Key (from Clerk dashboard)
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key
+
+  # Your Clerk Secret Key (from Clerk dashboard)
+  # Required for certain Clerk operations during development/build.
+  # IMPORTANT: Keep this key secret and DO NOT commit it to version control.
+  CLERK_SECRET_KEY=sk_test_your_clerk_secret_key
   ```
-  NEXT_PUBLIC_CLERK_FRONTEND_API="your-clerk-frontend-api"
-  NEXT_PUBLIC_SERVER_URL="http://localhost:4000"
-  ```
+
+4. Set up and run the server
+
+- Navigate to the server directory: cd ../compiti-server
+- Follow the instructions in the compiti-server's [README](https://github.com/aghmnl/compiti-server/blob/main/README.md) to install its dependencies, set up its environment variables (including database connection, Clerk keys, etc.), and start the server.
+- Ensure the server is running on http://localhost:4000.
 
 5. **Run the development server**
 
-   ```bash
-   npm run dev
-   ```
+- Navigate back to the client directory: cd ../compiti-client
+- Start the client:
+
+  ```bash
+  npm run dev
+  ```
 
 6. **Access the application**
 
 - Open your browser and navigate to http://localhost:3000.
+- You should be prompted to sign in via Clerk.
 
 ## Contributing
 
-Feel free to fork this repository and submit pull requests for improvements or bug fixes.
+Feel free to fork this repository and submit pull requests for improvements or bug fixes. Ensure any changes are compatible with the linked compiti-server repository.
 
 ## License
 

@@ -17,9 +17,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [queryClient] = useState(() => new QueryClient()); // Create only one QueryClient instance
+  const serverUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:4000";
+  const [queryClient] = useState(() => new QueryClient());
   const trpcClient = trpc.createClient({
-    links: [httpLink({ url: "http://localhost:4000/trpc" })],
+    links: [httpLink({ url: `${serverUrl}/trpc` })],
   });
 
   return (
