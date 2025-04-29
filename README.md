@@ -11,6 +11,12 @@ This repository contains the **Client Side** of a simple **Task Management Appli
 
 ### Demo Video
 
+Watch a demo of the application here:
+
+[![Application Demo Thumbnail](https://img.youtube.com/vi/T5U76kEB1eU/hqdefault.jpg)](https://youtu.be/T5U76kEB1eU)
+
+Or directly: [Watch Demo Video](https://youtu.be/T5U76kEB1eU)
+
 ## Server side
 
 The **Server Side** of this application is available in the following repository:  
@@ -41,16 +47,6 @@ This repository successfully implements a full CRUD (Create, Read, Update, Delet
 - **Responsive Design:** Ensured the UI adapts gracefully to different screen sizes, including a Floating Action Button (FAB) on mobile for creating tasks.
 - **Code Quality & Organization:** Followed best practices for code structure, separating concerns into components, services (`useTaskService`), shared types (`taskDefinitions`), and utility functions.
 - **Developer Experience:** Configured with **TypeScript**, **ESLint**, and **Prettier** (with Tailwind CSS plugin) for improved code consistency and maintainability.
-
-## Technologies
-
-The server is implemented using the following technologies:
-
-- **Next.js** (App Router, TypeScript) for the frontend.
-- **tRPC** for communication with the backend.
-- **Zod** for client-side schema validation.
-- **shadcn/ui** for a clean and responsive UI.
-- **Clerk** for user authentication.
 
 ### Documentation Used
 
@@ -118,7 +114,7 @@ Follow these steps to install and run the application locally:
 4. Set up and run the server
 
 - Navigate to the server directory: cd ../compiti-server
-- Follow the instructions in the compiti-server's README to install its dependencies, set up its environment variables (including database connection, Clerk keys, etc.), and start the server (usually with npm run dev or yarn dev).
+- Follow the instructions in the compiti-server's [README](https://github.com/aghmnl/compiti-server/blob/main/README.md) to install its dependencies, set up its environment variables (including database connection, Clerk keys, etc.), and start the server.
 - Ensure the server is running on http://localhost:4000.
 
 5. **Run the development server**
