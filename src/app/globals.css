@@ -44,7 +44,7 @@
 }
 
 @theme {
-  --breakpoint-xs: 30rem;
+  --breakpoint-xs: 32rem;
 }
 
 @theme inline {
